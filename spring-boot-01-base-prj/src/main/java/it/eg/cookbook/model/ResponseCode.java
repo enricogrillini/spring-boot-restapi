@@ -1,20 +1,33 @@
 package it.eg.cookbook.model;
 
+import org.springframework.http.HttpStatus;
+
+
 public enum ResponseCode {
 
-    OK("Ok"),
-    DOCUMENTO_NON_TROVATO("Documento non trovato"),
-    DOCUMENTO_GIA_PRESENTE("Id documento è già presente"),
-    GENERIC("Errore generico");
+    OK("Ok", HttpStatus.OK),
+    NOT_FOUND("Non trovato", HttpStatus.NOT_FOUND),
+    TOKEN_ERRATO("Non trovato", HttpStatus.FORBIDDEN),
+    BUSINESS_ERROR("Errore generico", HttpStatus.BAD_REQUEST),
+    SYSTEM_ERROR("Errore di sistema", HttpStatus.INTERNAL_SERVER_ERROR);
 
-    private String message;
+    private String description;
+    private HttpStatus httpStatus;
 
-    public String getMessage() {
-        return message;
+    public String getDescription() {
+        return description;
     }
 
-    ResponseCode(String message) {
-        this.message = message;
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 
+    public ResponseMessage getResponseMessage(String detail) {
+        return new ResponseMessage(toString(), getDescription(), detail);
+    }
+
+    ResponseCode(String description, HttpStatus httpStatus) {
+        this.description = description;
+        this.httpStatus = httpStatus;
+    }
 }

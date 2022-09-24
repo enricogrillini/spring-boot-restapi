@@ -45,7 +45,7 @@ public class DocumentController {
     @DeleteMapping(path = "/{documentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseMessage deleteDocument(@PathVariable Integer documentId) {
         documentServices.delete(documentId);
-        return new ResponseMessage(true, ResponseCode.OK, "Documento eliminato correttamente");
+        return new ResponseMessage(ResponseCode.OK.toString(), ResponseCode.OK.getDescription(), "Documento eliminato correttamente");
     }
 
 
@@ -57,7 +57,7 @@ public class DocumentController {
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseMessage postDocument(@RequestBody Document document) {
         documentServices.save(document);
-        return new ResponseMessage(true, ResponseCode.OK, "Documento creato correttamente");
+        return new ResponseMessage(ResponseCode.OK.toString(), ResponseCode.OK.getDescription(), "Documento creato correttamente");
 
     }
 
@@ -69,7 +69,7 @@ public class DocumentController {
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseMessage putDocument(@RequestBody Document document) {
         documentServices.save(document);
-        return new ResponseMessage(true, ResponseCode.OK, "Documento aggiornato correttamente");
+        return new ResponseMessage(ResponseCode.OK.toString(), ResponseCode.OK.getDescription(), "Documento aggiornato correttamente");
     }
 }
 
