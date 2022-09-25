@@ -17,8 +17,16 @@ Tra gli aspetti indirizzati:
    - Actuator
  - 04
    - Swagger
- - **05**
-   - **Gestione Sicurezza tramite JWT**
+ - 05
+   - Gestione Sicurezza tramite JWT
+   - Swagger definizione multipla (document/security)
+  - **06**
+    - **Approccio contract first**
+ - 07
+   - JPA
+   - Caching - Caffeine
+ - 08
+   - Integration test
 
 
 ## Link principali
@@ -83,7 +91,7 @@ mvn sonar:sonar "-Dsonar.projectKey=allitude-spring-boot-restapi" "-Dsonar.host.
   
     ```properties
     server.port=8082
-
+    
     app.version=@project.version@
     
     cookbook.public_key_jwt=classpath:public_key_jwt.pem

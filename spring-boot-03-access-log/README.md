@@ -17,8 +17,17 @@ Tra gli aspetti indirizzati:
    - **Actuator**
  - 04
    - Swagger
+
  - 05
    - Gestione Sicurezza tramite JWT
+   - Swagger definizione multipla (document/security)
+  - 06
+    - Approccio contract first
+ - 07
+   - JPA
+   - Caching - Caffeine
+ - 08
+   - Integration test
 
 
 ## Link principali
@@ -67,4 +76,3 @@ mvn sonar:sonar "-Dsonar.projectKey=allitude-spring-boot-restapi" "-Dsonar.host.
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
   ```
-  

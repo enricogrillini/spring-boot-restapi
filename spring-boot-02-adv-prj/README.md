@@ -19,6 +19,14 @@ Tra gli aspetti indirizzati:
    - Swagger
  - 05
    - Gestione Sicurezza tramite JWT
+   - Swagger definizione multipla (document/security)
+  - 06
+    - Approccio contract first
+ - 07
+   - JPA
+   - Caching - Caffeine
+ - 08
+   - Integration test
 
 
 ## Link principali

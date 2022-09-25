@@ -21,17 +21,16 @@ Tra gli aspetti indirizzati:
  - 04
    - Swagger
    
- - 05
-   - Gestione Sicurezza tramite JWT
-   
- - 06
-   - Approccio contract first
-   
- - 07
-   - JPA
-   - Caching - Caffeine
- - **08**
-   - **Integration test**
+ - **05**
+   - **Gestione Sicurezza tramite JWT**
+   - **Swagger definizione multipla (document/security)**
+  - 06
+    - Approccio contract first
+ - **07**
+   - **JPA**
+   - **Caching - Caffeine**
+ - 08
+   - Integration test
 
 ## Link principali
 - **Swagger UI** - http://localhost:8082/swagger-ui.html

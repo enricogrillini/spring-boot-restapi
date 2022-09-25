@@ -19,6 +19,14 @@ Tra gli aspetti indirizzati:
    - Swagger
  - 05
    - Gestione Sicurezza tramite JWT
+   - Swagger definizione multipla (document/security)
+  - 06
+    - Approccio contract first
+ - 07
+   - JPA
+   - Caching - Caffeine
+ - 08
+   - Integration test
 
 
 ## Link principali
@@ -55,5 +63,4 @@ curl -X PUT "http://localhost:8082/api/v1/document" -d "{\"id\":4,\"name\":\"App
 mvn org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report
 mvn sonar:sonar "-Dsonar.projectKey=allitude-spring-boot-restapi" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=67c3ece48b0c72e568899e4cb4fd5be3d61416da"
 ```
-
 
