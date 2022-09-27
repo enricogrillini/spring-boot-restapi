@@ -20,8 +20,8 @@ Create Table Document
 Alter Table Document Add Constraint Document_PK Primary Key (id);
 
 
-Insert into Document values (1, 'doc-1', 'Contratto vita', to_date('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
-Insert into Document values (2, 'doc-2', 'Allegato 1 - Contratto vita', to_date('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
-Insert into Document values (3, 'doc-3', 'Allegato 3 - Contratto vita', to_date('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
+Insert into Document values (nextval('Seq_IdDocument'), 'doc-1', 'Contratto vita', to_date('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
+Insert into Document values (nextval('Seq_IdDocument'), 'doc-2', 'Allegato 1 - Contratto vita', to_date('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
+Insert into Document values (nextval('Seq_IdDocument'), 'doc-3', 'Allegato 3 - Contratto vita', to_date('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
 
 
