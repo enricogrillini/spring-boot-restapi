@@ -198,7 +198,7 @@ class DocumentControllerTest {
     @Test
     @Order(8)
     void postDocumentTestKO() throws Exception {
-        String documentStr = objectMapper.writeValueAsString(mockDocument(5));
+        String documentStr = objectMapper.writeValueAsString(mockDocument(3));
 
         MvcResult mvcResult = mockMvc
                 .perform(MockMvcRequestBuilders.post(URI)
