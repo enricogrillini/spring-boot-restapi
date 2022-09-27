@@ -4,21 +4,18 @@ package it.eg.cookbook.model.mapper;
 import it.eg.cookbook.model.Document;
 import it.eg.cookbook.model.entity.DocumentEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface DocumentMapper {
 
-    DocumentMapper INSTANCE = Mappers.getMapper(DocumentMapper.class);
+    Document entityToApi(DocumentEntity documentEntity);
 
-    Document requestEntityToApi(DocumentEntity request);
+    DocumentEntity apiToEntity(Document document);
 
-    DocumentEntity requestApiToEntity(Document request);
+    List<Document> entityToApi(Iterable<DocumentEntity> documentEntities);
 
-    List<Document> requestEntityToApi(Iterable<DocumentEntity> request);
-
-    List<DocumentEntity> requestApiToEntity(Iterable<Document> request);
+    List<DocumentEntity> apiToEntity(Iterable<Document> documents);
 
 }
