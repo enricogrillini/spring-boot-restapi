@@ -1,30 +1,56 @@
 package it.eg.cookbook;
 
+import it.eg.cookbook.model.DocumentPojo;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.*;
-import org.springframework.web.client.HttpStatusCodeException;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@Transactional
+@Commit
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class DocumentControllerAbstractTest extends AbstractTest {
 
     @Test
-    void getDocumentsTest() throws Exception {
+    @Order(1)
+    void getDocumentsTest() {
+        DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
+        System.out.println(documentPojo);
 
-        HttpStatus httpStatus;
-        MediaType mediaType;
-        String body;
+        // Update
+        jdbcTemplate.update("Update document set description = 'pippo' where Id = 1");
 
-        try {
-            ResponseEntity<String> response = restTemplate.exchange("http://localhost:8082/api/v1/document", HttpMethod.GET, null, String.class);
-            httpStatus = response.getStatusCode();
-            mediaType = response.getHeaders().getContentType();
-            body = response.getBody();
-        } catch (HttpStatusCodeException e) {
-            httpStatus = e.getStatusCode();
-            mediaType = e.getResponseHeaders().getContentType();
-            body = e.getResponseBodyAsString();
-        }
+        documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
+        System.out.println(documentPojo);
+    }
+
+    @Test
+    @Order(2)
+    void getDocumentsTest2() {
+        // Update
+        DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
+
+        System.out.println(documentPojo);
+    }
+}
+
+//        HttpStatus httpStatus;
+//        MediaType mediaType;
+//        String body;
+//
+//        try {
+//            ResponseEntity<String> response = restTemplate.exchange("http://localhost:8082/api/v1/document", HttpMethod.GET, null, String.class);
+//            httpStatus = response.getStatusCode();
+//            mediaType = response.getHeaders().getContentType();
+//            body = response.getBody();
+//        } catch (HttpStatusCodeException e) {
+//            httpStatus = e.getStatusCode();
+//            mediaType = e.getResponseHeaders().getContentType();
+//            body = e.getResponseBodyAsString();
+//        }
 
 //        assertEquals(expectedStatus, httpStatus);
 //        assertEquals(MediaType.APPLICATION_JSON, mediaType);
@@ -44,7 +70,7 @@ public abstract class DocumentControllerAbstractTest extends AbstractTest {
 //        // Verifico che la lista di documenti non sia vuota
 //        Document[] documents = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Document[].class);
 //        assertEquals(3, documents.length);
-    }
+
 //
 //    @Test
 //    @Order(2)
@@ -270,4 +296,3 @@ public abstract class DocumentControllerAbstractTest extends AbstractTest {
 //        assertEquals(HttpStatus.FORBIDDEN.value(), mvcResult.getResponse().getStatus());
 //    }
 
-}

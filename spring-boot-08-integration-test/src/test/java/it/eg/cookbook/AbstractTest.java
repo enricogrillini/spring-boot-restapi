@@ -40,7 +40,7 @@ public abstract class AbstractTest {
 
     // In caso di Integration test il Data Source deve essere inizializzato
     private static final DataSource IT_DATA_SOURCE =
-            new DriverManagerDataSource("jdbc:postgresql://localhost:5432/postgres?currentSchema=cookbook", "cookbook", "cookbook");
+            new DriverManagerDataSource("jdbc:postgresql://localhost:5433/postgres?currentSchema=cookbook", "cookbook", "cookbook");
 
     @BeforeEach
     void setup(TestInfo testInfo) throws SQLException {
@@ -61,7 +61,7 @@ public abstract class AbstractTest {
         }
 
         restTemplate = new RestTemplate();
-        jdbcTemplate = new JdbcTemplate();
+        jdbcTemplate = new JdbcTemplate(dataSource);
 
         // Operazioni da eseguire ad ogni test
     }
@@ -91,7 +91,7 @@ public abstract class AbstractTest {
         // - macOS: Docker Compose v2.10.2
         new DockerComposeContainer<>(new File("docker/docker-compose.yml"))
                 .withOptions("--compatibility")
-//                .withExposedService("postgres", 5432, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
+                .withExposedService("postgres", 5433, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
                 .withExposedService("rest-api", 8082, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
                 .withBuild(true)
                 .withLocalCompose(true)
