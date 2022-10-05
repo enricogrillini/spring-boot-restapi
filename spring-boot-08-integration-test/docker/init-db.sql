@@ -13,8 +13,7 @@ Create Table Document
        name VARCHAR(100) Not Null,
        description VARCHAR(100) Not Null,
        data date,
-       updateBy VARCHAR(100)
-      );
+       update_by VARCHAR(100));
 
 -- Primary Key Document
 Alter Table Document Add Constraint Document_PK Primary Key (id);

@@ -6,11 +6,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.client.RestTemplate;
+import org.testcontainers.containers.DockerComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.sql.SQLException;
+import java.time.Duration;
 
 /**
  * Classe comune per la gestione di Unit e Integration test.
@@ -21,12 +26,13 @@ import java.sql.SQLException;
 @Slf4j
 public abstract class AbstractTest {
 
+    private TestInfo testInfo;
 
     private static boolean firstTest = true;
 
-    private TestInfo testInfo;
+    protected RestTemplate restTemplate;
 
-    protected RestTemplate restTemplate = new RestTemplate();
+    protected JdbcTemplate jdbcTemplate;
 
     // In caso di Unit test il Data Source è impostato da Spring
     @Autowired
@@ -40,12 +46,22 @@ public abstract class AbstractTest {
     void setup(TestInfo testInfo) throws SQLException {
         this.testInfo = testInfo;
 
+        // Operazioni da eseguire allo startup
         if (firstTest) {
-            // Operazioni da eseguire allo startup
+            // Initegration test
+            if (getTestType() == TestType.IntegrationTest) {
+                // Imposto il datasource
+                dataSource = IT_DATA_SOURCE;
+
+                // Avvio il compose
+                startCompose();
+            }
+
             firstTest = false;
-        } else {
-            dataSource = IT_DATA_SOURCE;
         }
+
+        restTemplate = new RestTemplate();
+        jdbcTemplate = new JdbcTemplate();
 
         // Operazioni da eseguire ad ogni test
     }
@@ -61,6 +77,50 @@ public abstract class AbstractTest {
     public String getTestMethod() {
         return testInfo.getTestMethod().get().getName();
     }
+
+    private void startCompose() {
+        // Singleton container:
+        // https://www.testcontainers.org/test_framework_integration/manual_lifecycle_control/
+        //
+        // 16/09/2022: --compatibility affinché Testcontainers riconosca
+        // l'avvio dei servizi anche su versioni recenti di docker-compose
+        // che userebbero il separatore "-" anziché "_" nei nomi container:
+        // https://techhelpnotes.com/docker-compose-container-name-use-dash-instead-of-underscore-_-2/
+        // Nessun problema su Windows con docker-compose 1.29.2 bensì su:
+        // - Linux: docker-compose 1.26.0 & Docker Compose v2.6.0
+        // - macOS: Docker Compose v2.10.2
+        new DockerComposeContainer<>(new File("docker/docker-compose.yml"))
+                .withOptions("--compatibility")
+//                .withExposedService("postgres", 5432, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
+                .withExposedService("rest-api", 8082, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
+                .withBuild(true)
+                .withLocalCompose(true)
+                .start();
+    }
+
+//    private static class DockerComposeSingletonLauncher {
+//        static {
+//            log.info("Avviamo docker-compose");
+//
+//            // Singleton container:
+//            // https://www.testcontainers.org/test_framework_integration/manual_lifecycle_control/
+//            //
+//            // 16/09/2022: --compatibility affinché Testcontainers riconosca
+//            // l'avvio dei servizi anche su versioni recenti di docker-compose
+//            // che userebbero il separatore "-" anziché "_" nei nomi container:
+//            // https://techhelpnotes.com/docker-compose-container-name-use-dash-instead-of-underscore-_-2/
+//            // Nessun problema su Windows con docker-compose 1.29.2 bensì su:
+//            // - Linux: docker-compose 1.26.0 & Docker Compose v2.6.0
+//            // - macOS: Docker Compose v2.10.2
+//            new DockerComposeContainer<>(new File("docker/docker-compose.yml"))
+//                    .withOptions("--compatibility")
+//                    .withExposedService("gaat-mysql", 3306, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
+//                    .withExposedService("be-piattaforma-unica", 8080, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
+//                    .withBuild(true)
+//                    .withLocalCompose(true)
+//                    .start();
+//        }
+//    }
 
 
 }
