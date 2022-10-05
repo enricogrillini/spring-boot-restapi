@@ -20,6 +20,9 @@
         <!-- Open api -->
         <openapi-generator-version>6.2.0</openapi-generator-version>
         <org.openapitools.jackson-databind-nullable.version>0.2.2</org.openapitools.jackson-databind-nullable.version>
+
+        <!-- Test container -->
+        <testcontainers.version>1.17.3</testcontainers.version>
     </properties>
 
     <parent>
@@ -113,6 +116,20 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Test container -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
 
