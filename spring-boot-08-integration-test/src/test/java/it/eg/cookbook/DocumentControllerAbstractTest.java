@@ -1,18 +1,36 @@
 package it.eg.cookbook;
 
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.*;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class DocumentControllerAbstractTest extends AbstractTest {
 
-
-
-
     @Test
-    @Order(1)
     void getDocumentsTest() throws Exception {
+
+        HttpStatus httpStatus;
+        MediaType mediaType;
+        String body;
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange("http://localhost:8082/api/v1/document", HttpMethod.GET, null, String.class);
+            httpStatus = response.getStatusCode();
+            mediaType = response.getHeaders().getContentType();
+            body = response.getBody();
+        } catch (HttpStatusCodeException e) {
+            httpStatus = e.getStatusCode();
+            mediaType = e.getResponseHeaders().getContentType();
+            body = e.getResponseBodyAsString();
+        }
+
+//        assertEquals(expectedStatus, httpStatus);
+//        assertEquals(MediaType.APPLICATION_JSON, mediaType);
+//        assertJsonEquals(readExpectedFile(), body);
+
+
 //        MvcResult mvcResult = mockMvc
 //                .perform(MockMvcRequestBuilders
 //                        .get(URI)

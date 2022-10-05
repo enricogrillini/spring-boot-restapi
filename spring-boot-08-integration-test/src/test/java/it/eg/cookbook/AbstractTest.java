@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -24,6 +25,8 @@ public abstract class AbstractTest {
     private static boolean firstTest = true;
 
     private TestInfo testInfo;
+
+    protected RestTemplate restTemplate = new RestTemplate();
 
     // In caso di Unit test il Data Source è impostato da Spring
     @Autowired
