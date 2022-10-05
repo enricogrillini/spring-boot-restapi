@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Commit
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public abstract class DocumentControllerAbstractTest extends AbstractTest {
+public abstract class DocumentControllerAbstract extends AbstractTest {
 
     @Test
     @Order(1)
-    void getDocumentsTest() {
+    void getDocuments() {
         DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
         System.out.println(documentPojo);
 
@@ -24,7 +24,7 @@ public abstract class DocumentControllerAbstractTest extends AbstractTest {
         jdbcTemplate.update("Update document set description = 'pippo' where Id = 1");
 
         documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
-        System.out.println(documentPojo);
+        System.out.println(readExpectedFile());
     }
 
     @Test

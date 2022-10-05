@@ -1,6 +1,6 @@
 package it.eg.cookbook.it;
 
-import it.eg.cookbook.DocumentControllerAbstractTest;
+import it.eg.cookbook.DocumentControllerAbstract;
 
-class DocumentControllerIT extends DocumentControllerAbstractTest {
+class DocumentControllerIT extends DocumentControllerAbstract {
 }

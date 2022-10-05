@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class SecurityTest {
+class SecurityTestaaa {
 
     @Autowired
     ObjectMapper objectMapper;

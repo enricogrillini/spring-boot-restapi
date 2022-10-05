@@ -1,7 +1,7 @@
 package it.eg.cookbook.ut;
 
-import it.eg.cookbook.DocumentControllerAbstractTest;
+import it.eg.cookbook.DocumentControllerAbstract;
 
 @SpringUnitTest
-class DocumentControllerTest extends DocumentControllerAbstractTest {
+class DocumentControllerTest extends DocumentControllerAbstract {
 }
