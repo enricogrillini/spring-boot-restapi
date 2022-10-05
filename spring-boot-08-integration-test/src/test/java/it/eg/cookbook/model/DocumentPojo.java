@@ -1,4 +1,4 @@
-package it.eg.cookbook.it.model;
+package it.eg.cookbook.model;
 
 
 import lombok.Data;

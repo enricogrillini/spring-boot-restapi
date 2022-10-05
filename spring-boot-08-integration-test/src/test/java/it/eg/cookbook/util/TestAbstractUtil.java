@@ -1,9 +1,11 @@
 package it.eg.cookbook.util;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.TestInfo;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -11,20 +13,28 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 
-@Data
+import static org.junit.jupiter.api.Assertions.fail;
+
 @Slf4j
-public class TestFileUtil {
+public class TestAbstractUtil {
 
-    private TestType testType;
-    private String className;
-    private String methodName;
+    private TestInfo testInfo;
 
-    public TestFileUtil(TestInfo testInfo) {
-        testType = testInfo.getTestClass().get().getSimpleName().endsWith("IT") ? TestType.IntegrationTest : TestType.UnitTest;
-        className = testInfo.getTestClass().get().getSimpleName();
-        methodName = testInfo.getTestMethod().get().getName();
+    public TestAbstractUtil(TestInfo testInfo) {
+        this.testInfo = testInfo;
     }
 
+    public TestType getTestType() {
+        return testInfo.getTestClass().get().getSimpleName().endsWith("IT") ? TestType.IntegrationTest : TestType.UnitTest;
+    }
+
+    public String getTestClass() {
+        return testInfo.getTestClass().get().getSimpleName();
+    }
+
+    public String getTestMethod() {
+        return testInfo.getTestMethod().get().getName();
+    }
 
     protected static String readFile(String fileName) {
         return readFile(new File(fileName));
@@ -67,14 +77,13 @@ public class TestFileUtil {
         String fileNamePath = "src/test/file/{0}{1}{2}{3}.json";
 
         // Lettura file specifico per il test (in funzione del tipo ti test UT o IT)
-        File file = new File(MessageFormat.format(fileNamePath, className, type, methodName, fileNameSuffix));
+        File file = new File(MessageFormat.format(fileNamePath, getTestClass(), type, getTestMethod(), fileNameSuffix));
         if (file.isFile()) {
             return readFile(file);
         }
 
         // Lettura file generico per il test (indipendente dal fatto che siano UT o IT)
-        className = className.endsWith("IT") ? className.substring(0, className.length() - 2) : className.substring(0, className.length() - 4);
-        file = new File(MessageFormat.format(fileNamePath, className, type, methodName, fileNameSuffix));
+        file = new File(MessageFormat.format(fileNamePath, getTestClass(), type, getTestMethod(), fileNameSuffix));
 
         return readFile(file);
     }
@@ -96,5 +105,26 @@ public class TestFileUtil {
             return null;
         }
     }
+
+
+    public void assertJsonEquals(String expectedStr, String actualStr) {
+        try {
+            try {
+                // "STRICT" pro fallimento test in presenza di campi aggiuntivi
+                JSONAssert.assertEquals(expectedStr, actualStr, JSONCompareMode.STRICT);
+            } catch (AssertionError ex) {
+                String fileNamePath = "./target/actual/{0}/{1}.json";
+                String className = getTestClass();
+                String methodName = getTestMethod();
+
+                FileUtils.writeStringToFile(new File(MessageFormat.format(fileNamePath, className, methodName)), actualStr, StandardCharsets.UTF_8);
+                fail(ex);
+            }
+        } catch (JSONException | IOException ex) {
+            log.error(ex.getMessage(), ex);
+            fail(ex);
+        }
+    }
+
 
 }
