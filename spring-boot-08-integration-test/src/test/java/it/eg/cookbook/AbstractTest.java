@@ -30,9 +30,9 @@ public abstract class AbstractTest {
 
     private static boolean firstTest = true;
 
-    protected RestTemplate restTemplate;
+    protected static RestTemplate restTemplate;
 
-    protected JdbcTemplate jdbcTemplate;
+    protected static JdbcTemplate jdbcTemplate;
 
     // In caso di Unit test il Data Source è impostato da Spring
     @Autowired
@@ -40,7 +40,7 @@ public abstract class AbstractTest {
 
     // In caso di Integration test il Data Source deve essere inizializzato
     private static final DataSource IT_DATA_SOURCE =
-            new DriverManagerDataSource("jdbc:postgresql://localhost:5433/postgres?currentSchema=cookbook", "cookbook", "cookbook");
+            new DriverManagerDataSource("jdbc:postgresql://localhost:5432/postgres?currentSchema=cookbook", "cookbook", "cookbook");
 
     @BeforeEach
     void setup(TestInfo testInfo) throws SQLException {
@@ -48,20 +48,20 @@ public abstract class AbstractTest {
 
         // Operazioni da eseguire allo startup
         if (firstTest) {
-            // Initegration test
+            // Integration test
             if (getTestType() == TestType.IntegrationTest) {
-                // Imposto il datasource
-                dataSource = IT_DATA_SOURCE;
-
                 // Avvio il compose
                 startCompose();
+
+                // Imposto il datasource
+                dataSource = IT_DATA_SOURCE;
             }
+
+            restTemplate = new RestTemplate();
+            jdbcTemplate = new JdbcTemplate(dataSource);
 
             firstTest = false;
         }
-
-        restTemplate = new RestTemplate();
-        jdbcTemplate = new JdbcTemplate(dataSource);
 
         // Operazioni da eseguire ad ogni test
     }
@@ -91,7 +91,7 @@ public abstract class AbstractTest {
         // - macOS: Docker Compose v2.10.2
         new DockerComposeContainer<>(new File("docker/docker-compose.yml"))
                 .withOptions("--compatibility")
-                .withExposedService("postgres", 5433, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
+                .withExposedService("postgres", 5432, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
                 .withExposedService("rest-api", 8082, Wait.forListeningPort().withStartupTimeout(Duration.ofSeconds(120)))
                 .withBuild(true)
                 .withLocalCompose(true)

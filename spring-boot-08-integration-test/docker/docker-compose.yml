@@ -9,6 +9,8 @@ services:
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     environment:
       POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
     logging:
       driver: "json-file"
       options:
@@ -28,10 +30,11 @@ services:
       - "../target:/tmp"
     depends_on:
       - postgres
+    ports:
+      - "8082:8082"
     logging:
       driver: "json-file"
       options:
         max-size: "200k"
         max-file: "5"
-    ports:
-      - "8082:8082"
+
