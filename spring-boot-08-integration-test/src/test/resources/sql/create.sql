@@ -12,9 +12,9 @@ Create Table Document
 -- Primary Key Document
 Alter Table Document Add Constraint Document_PK Primary Key (id);
 
-
-Insert into Document values (nextval('Seq_IdDocument'), 'doc-1', 'Contratto vita', PARSEDATETIME('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
-Insert into Document values (nextval('Seq_IdDocument'), 'doc-2', 'Allegato 1 - Contratto vita', PARSEDATETIME('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
-Insert into Document values (nextval('Seq_IdDocument'), 'doc-3', 'Allegato 3 - Contratto vita', PARSEDATETIME('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
+-- Nota: Su H2 la funzione TO_DATE in modalità compatibilità PostgreSQL e' disponibile dalla v 2.0.204
+Insert into Document values (nextval('Seq_IdDocument'), 'doc-1', 'Contratto vita', to_date('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
+Insert into Document values (nextval('Seq_IdDocument'), 'doc-2', 'Allegato 1 - Contratto vita', to_date('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
+Insert into Document values (nextval('Seq_IdDocument'), 'doc-3', 'Allegato 3 - Contratto vita', to_date('01/01/2022','dd/MM/yyyy'), 'Ugo') ;
 
 
