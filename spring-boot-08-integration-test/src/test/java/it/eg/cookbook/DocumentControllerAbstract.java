@@ -5,36 +5,69 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.http.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
 @Commit
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class DocumentControllerAbstract extends AbstractTest {
 
+    private static final String URI = "http://localhost:8082/api/v1/document";
+    private static final String URI_ID = "/api/v1/document/{documentId}";
+
+    void testGet(String url, String authorization, HttpStatus expectedStatus, Object... uriVariables) throws RestClientException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, authorization);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+            assertEquals(expectedStatus, response.getStatusCode());
+            assertEquals(MediaType.APPLICATION_JSON, response.getHeaders().getContentType());
+            assertJsonEquals(readExpectedFile(), response.getBody());
+        } catch (HttpStatusCodeException e) {
+            assertEquals(expectedStatus, e.getStatusCode());
+            assertEquals(MediaType.APPLICATION_JSON, e.getResponseHeaders().getContentType());
+            assertJsonEquals(readExpectedFile(), e.getResponseBodyAsString());
+        }
+    }
+
     @Test
-    @Order(1)
+    @Order(0)
     void getDocuments() {
-        DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
-        System.out.println(documentPojo);
-
-        // Update
-        jdbcTemplate.update("Update document set description = 'pippo' where Id = 1");
-
-        documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
-        System.out.println(readExpectedFile());
+        testGet(URI, "", HttpStatus.OK);
     }
 
-    @Test
-    @Order(2)
-    void getDocumentsTest2() {
-        // Update
-        DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
 
-        System.out.println(documentPojo);
-    }
+//    @Test
+//    @Order(1)
+//    void getDocuments() {
+//        DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
+//        System.out.println(documentPojo);
+//
+//        // Update
+//        jdbcTemplate.update("Update document set description = 'pippo' where Id = 1");
+//
+//        documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
+//        System.out.println(readExpectedFile());
+//    }
+//
+//    @Test
+//    @Order(2)
+//    void getDocumentsTest2() {
+//        // Update
+//        DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
+//
+//        System.out.println(documentPojo);
+//    }
 }
 
 //        HttpStatus httpStatus;

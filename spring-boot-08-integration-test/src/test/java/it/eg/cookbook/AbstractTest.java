@@ -9,20 +9,25 @@ import org.junit.jupiter.api.TestInfo;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
+import org.testcontainers.shaded.org.apache.commons.io.comparator.NameFileComparator;
 
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.time.Duration;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -64,6 +69,8 @@ public abstract class AbstractTest {
 
                 // Imposto il datasource
                 dataSource = IT_DATA_SOURCE;
+            } else {
+                initDB();
             }
 
             restTemplate = new RestTemplate();
@@ -93,6 +100,18 @@ public abstract class AbstractTest {
         return testInfo.getTestMethod().get().getName();
     }
 
+    private void initDB() throws SQLException {
+        File[] sqlFiles = new File("src/test/resources/sql").listFiles((dir, name) -> name.endsWith(".sql"));
+
+        Arrays.sort(sqlFiles, NameFileComparator.NAME_COMPARATOR);
+        try (Connection con = dataSource.getConnection()) {
+            for (File f : sqlFiles) {
+                log.info("Loading SQL script {} into database", f.getName());
+                ScriptUtils.executeSqlScript(con, new FileSystemResource(f));
+            }
+        }
+
+    }
 
     private void startCompose() {
         // Singleton container:
