@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public abstract class DocumentControllerAbstract extends AbstractTest {
 
     private static final String URI = "http://localhost:8082/api/v1/document";
-    private static final String URI_ID = "/api/v1/document/{documentId}";
+    private static final String URI_ID = "http://localhost:8082/api/v1/document/{documentId}";
 
     void testGet(String url, String authorization, HttpStatus expectedStatus, Object... uriVariables) throws RestClientException {
         HttpHeaders headers = new HttpHeaders();
@@ -29,7 +29,7 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
         headers.add(HttpHeaders.AUTHORIZATION, authorization);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class, uriVariables);
             assertEquals(expectedStatus, response.getStatusCode());
             assertEquals(MediaType.APPLICATION_JSON, response.getHeaders().getContentType());
             assertJsonEquals(readExpectedFile(), response.getBody());
@@ -41,11 +41,17 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
     }
 
     @Test
-    @Order(0)
+    @Order(1)
     void getDocuments() {
         testGet(URI, "", HttpStatus.OK);
     }
 
+
+    @Test
+    @Order(2)
+    void getDocument() {
+        testGet(URI_ID, "", HttpStatus.OK, 1);
+    }
 
 //    @Test
 //    @Order(1)
