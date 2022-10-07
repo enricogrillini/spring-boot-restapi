@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.eg.cookbook.config.ObjectMapperConfig;
 import it.eg.cookbook.util.TestType;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -221,7 +222,10 @@ public abstract class AbstractTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, authorization);
+
+        if (!StringUtils.isEmpty(authorization)) {
+            headers.add(HttpHeaders.AUTHORIZATION, authorization);
+        }
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, httpMethod, new HttpEntity<>(payload, headers), String.class, uriVariables);

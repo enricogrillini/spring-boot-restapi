@@ -1,21 +1,15 @@
 package it.eg.cookbook;
 
-import it.eg.cookbook.error.ResponseCode;
 import it.eg.cookbook.model.DocumentPojo;
-import it.eg.cookbook.model.ResponseMessage;
-import it.eg.cookbook.model.User;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.http.*;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.annotation.Commit;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,7 +26,6 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
     void getDocuments() {
         doRestTest(URI, HttpMethod.GET, "", null, HttpStatus.OK);
     }
-
 
     @Test
     @Order(2)
@@ -89,33 +82,14 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
 
         DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where name = 'doc-5'", new BeanPropertyRowMapper<>(DocumentPojo.class));
         assertJsonEquals(readExpectedFile("-pojo"), objectMapper.writeValueAsString(documentPojo));
-
-//        System.out.println(readExpectedFile());
-//        DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where name = 'doc-5'", new BeanPropertyRowMapper<>(DocumentPojo.class));
-//        System.out.println(documentPojo);
-//        documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
-
     }
 
-//        String documentStr = objectMapper.writeValueAsString(mockDocument(5));
-//        String jwtToken = jwtService.createJWT(new User().issuer("www.idm.com").subject("writer-2").audience("progetto-cookbook").customClaim("customClaim").ttlMillis(Long.valueOf(3600 * 1000)));
-//
-//        MvcResult mvcResult = mockMvc
-//                .perform(MockMvcRequestBuilders.post(URI)
-//                        .accept(MediaType.APPLICATION_JSON_VALUE)
-//                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                        .content(documentStr)
-//                        .header("Authorization", "Bearer " + jwtToken))
-//                .andReturn();
-//
-//        // Verifico lo stato della risposta
-//        assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
-//
-//        // Verifico che lo Documento sia corretto
-//        ResponseMessage responseMessage = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResponseMessage.class);
-//        assertEquals(ResponseCode.OK.toString(), responseMessage.getCode());
-//        assertEquals(ResponseCode.OK.getDescription(), responseMessage.getDescription());
-//        assertEquals("Documento inserito correttamente", responseMessage.getDetail());
+    @Test
+    @Order(8)
+    void postDocumentKO() throws Exception {
+        doRestTest(URI, HttpMethod.POST, "", readRequestFile(), HttpStatus.BAD_REQUEST);
+    }
+
 }
 
 
