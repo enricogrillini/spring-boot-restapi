@@ -21,7 +21,6 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
     private static final String URI = "http://localhost:8082/api/v1/document";
     private static final String URI_ID = "http://localhost:8082/api/v1/document/{documentId}";
 
-
     void doRestTest(String url, HttpMethod httpMethod, String authorization, Object payload, HttpStatus expectedStatus, Object... uriVariables) throws RestClientException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -59,28 +58,14 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
         doRestTest(URI_ID, HttpMethod.GET, "", null, HttpStatus.NOT_FOUND, 100);
     }
 
-
     @Test
     @Order(4)
     void deleteDocument() throws Exception {
+        assertEquals(1, jdbcTemplate.queryForObject("Select count(*) from document where Id = 1", Integer.class));
+
         doRestTest(URI_ID, HttpMethod.DELETE, "", null, HttpStatus.OK, 1);
 
-//        MvcResult mvcResult = mockMvc
-//                .perform(MockMvcRequestBuilders
-//                        .delete(URI_ID, 1)
-//                        .accept(MediaType.APPLICATION_JSON_VALUE)
-//                        .header("Authorization", "Bearer " + mockToken("admin-2")))
-//                .andReturn();
-//
-//        // Verifico lo stato della risposta
-//        assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
-//
-//        // Verifico che lo Documento sia corretto
-//        ResponseMessage responseMessage = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResponseMessage.class);
-//
-//        assertEquals(ResponseCode.OK.toString(), responseMessage.getCode());
-//        assertEquals(ResponseCode.OK.getDescription(), responseMessage.getDescription());
-//        assertEquals("Documento eliminato correttamente", responseMessage.getDetail());
+        assertEquals(0, jdbcTemplate.queryForObject("Select count(*) from document where Id = 1", Integer.class));
     }
 
 
