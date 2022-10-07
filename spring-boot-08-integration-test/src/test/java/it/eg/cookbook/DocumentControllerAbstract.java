@@ -1,12 +1,10 @@
 package it.eg.cookbook;
 
-import it.eg.cookbook.model.DocumentPojo;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.http.*;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
