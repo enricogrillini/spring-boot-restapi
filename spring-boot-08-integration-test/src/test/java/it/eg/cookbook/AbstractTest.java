@@ -1,5 +1,7 @@
 package it.eg.cookbook;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import it.eg.cookbook.config.ObjectMapperConfig;
 import it.eg.cookbook.util.TestType;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -48,8 +50,8 @@ public abstract class AbstractTest {
 
     private static boolean firstTest = true;
 
+    protected static ObjectMapper objectMapper;
     protected static RestTemplate restTemplate;
-
     protected static JdbcTemplate jdbcTemplate;
 
     // In caso di Unit test il Data Source è impostato da Spring
@@ -77,6 +79,7 @@ public abstract class AbstractTest {
                 initDB();
             }
 
+            objectMapper = ObjectMapperConfig.defaultObjectMapper();
             restTemplate = new RestTemplate();
             jdbcTemplate = new JdbcTemplate(dataSource);
 

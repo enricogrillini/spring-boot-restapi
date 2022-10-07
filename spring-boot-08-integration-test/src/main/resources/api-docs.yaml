@@ -155,9 +155,8 @@ components:
   schemas:
     Document:
       required:
-        - description
-        - id
         - name
+        - description
         - updateBy
       type: object
       properties:

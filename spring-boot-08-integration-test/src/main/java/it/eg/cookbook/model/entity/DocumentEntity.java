@@ -1,7 +1,6 @@
 package it.eg.cookbook.model.entity;
 
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

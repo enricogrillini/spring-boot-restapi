@@ -19,6 +19,10 @@ public class ObjectMapperConfig {
 
     @Bean
     ObjectMapper objectMapper() {
+        return defaultObjectMapper();
+    }
+
+    public static ObjectMapper defaultObjectMapper() {
         return JsonMapper
                 .builder()
                 .addModules(new Jdk8Module(), new JavaTimeModule(), new ParameterNamesModule())

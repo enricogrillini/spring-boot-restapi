@@ -55,15 +55,14 @@ public class DocumentController implements DocumentApi {
     @Override
     public ResponseEntity<ResponseMessage> postDocument(Document document) {
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Optional<DocumentEntity> documentOptional = documentServices.findById(document.getId());
-        if (documentOptional.isEmpty()) {
+        if (document.getId() == null) {
             DocumentEntity documentEntity = documentMapper.apiToEntity(document);
             documentEntity.setUpdateBy(authentication.getName());
             documentServices.save(documentEntity);
             return ResponseEntity.ok(ResponseCode.OK.getResponseMessage("Documento inserito correttamente"));
 
         } else {
-            throw new ApiException(ResponseCode.BUSINESS_ERROR, "Documento già presente");
+            throw new ApiException(ResponseCode.BUSINESS_ERROR, "Id documento deve essere null in inserimento");
         }
     }
 
