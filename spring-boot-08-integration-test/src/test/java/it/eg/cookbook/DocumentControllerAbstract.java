@@ -7,8 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -89,6 +92,25 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
     void postDocumentKO() throws Exception {
         doRestTest(URI, HttpMethod.POST, "", readRequestFile(), HttpStatus.BAD_REQUEST);
     }
+
+//    @Test
+//    @Order(9)
+//    void postDocumentTestKOSec() throws Exception {
+//        String documentStr = objectMapper.writeValueAsString(mockDocument(2));
+//
+//        MvcResult mvcResult = mockMvc
+//                .perform(MockMvcRequestBuilders
+//                        .post(URI)
+//                        .accept(MediaType.APPLICATION_JSON_VALUE)
+//                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                        .content(documentStr)
+//                        .header("Authorization", "Bearer fake"))
+//                .andReturn();
+//
+//        // Verifico lo stato della risposta
+//        assertEquals(HttpStatus.FORBIDDEN.value(), mvcResult.getResponse().getStatus());
+//    }
+
 
 }
 
