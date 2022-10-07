@@ -1,6 +1,5 @@
 package it.eg.cookbook;
 
-import io.micrometer.core.ipc.http.HttpSender;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -20,24 +19,6 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
 
     private static final String URI = "http://localhost:8082/api/v1/document";
     private static final String URI_ID = "http://localhost:8082/api/v1/document/{documentId}";
-
-    void doRestTest(String url, HttpMethod httpMethod, String authorization, Object payload, HttpStatus expectedStatus, Object... uriVariables) throws RestClientException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, authorization);
-
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(url, httpMethod, new HttpEntity<>(payload, headers), String.class, uriVariables);
-            assertEquals(expectedStatus, response.getStatusCode());
-            assertEquals(MediaType.APPLICATION_JSON, response.getHeaders().getContentType());
-            assertJsonEquals(readExpectedFile(), response.getBody());
-        } catch (HttpStatusCodeException e) {
-            assertEquals(expectedStatus, e.getStatusCode());
-            assertEquals(MediaType.APPLICATION_JSON, e.getResponseHeaders().getContentType());
-            assertJsonEquals(readExpectedFile(), e.getResponseBodyAsString());
-        }
-    }
 
     @Test
     @Order(1)
@@ -60,7 +41,7 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
 
     @Test
     @Order(4)
-    void deleteDocument() throws Exception {
+    void deleteDocument() {
         assertEquals(1, jdbcTemplate.queryForObject("Select count(*) from document where Id = 1", Integer.class));
 
         doRestTest(URI_ID, HttpMethod.DELETE, "", null, HttpStatus.OK, 1);
@@ -68,6 +49,13 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
         assertEquals(0, jdbcTemplate.queryForObject("Select count(*) from document where Id = 1", Integer.class));
     }
 
+    @Test
+    @Order(5)
+    void deleteDocument_Ko() throws Exception {
+        assertEquals(0, jdbcTemplate.queryForObject("Select count(*) from document where Id = 100", Integer.class));
+
+        doRestTest(URI_ID, HttpMethod.DELETE, "", null, HttpStatus.NOT_FOUND, 100);
+    }
 
 }
 

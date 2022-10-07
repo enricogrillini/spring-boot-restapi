@@ -10,9 +10,12 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -29,6 +32,7 @@ import java.text.MessageFormat;
 import java.time.Duration;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -190,7 +194,7 @@ public abstract class AbstractTest {
         }
     }
 
-    public void assertJsonEquals(String expectedStr, String actualStr) {
+    void assertJsonEquals(String expectedStr, String actualStr) {
         try {
             try {
                 // "STRICT" pro fallimento test in presenza di campi aggiuntivi
@@ -206,6 +210,25 @@ public abstract class AbstractTest {
         } catch (JSONException | IOException ex) {
             log.error(ex.getMessage(), ex);
             fail(ex);
+        }
+    }
+
+
+    void doRestTest(String url, HttpMethod httpMethod, String authorization, Object payload, HttpStatus expectedStatus, Object... uriVariables) throws RestClientException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, authorization);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, httpMethod, new HttpEntity<>(payload, headers), String.class, uriVariables);
+            assertEquals(expectedStatus, response.getStatusCode());
+            assertEquals(MediaType.APPLICATION_JSON, response.getHeaders().getContentType());
+            assertJsonEquals(readExpectedFile(), response.getBody());
+        } catch (HttpStatusCodeException e) {
+            assertEquals(expectedStatus, e.getStatusCode());
+            assertEquals(MediaType.APPLICATION_JSON, e.getResponseHeaders().getContentType());
+            assertJsonEquals(readExpectedFile(), e.getResponseBodyAsString());
         }
     }
 
