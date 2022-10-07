@@ -51,6 +51,12 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
         testGet(URI_ID, "", HttpStatus.OK, 1);
     }
 
+    @Test
+    @Order(3)
+    void getDocument_Ko() {
+        testGet(URI_ID, "", HttpStatus.NOT_FOUND, 100);
+    }
+
 //    @Test
 //    @Order(1)
 //    void getDocuments() {
