@@ -1,5 +1,6 @@
 package it.eg.cookbook;
 
+import io.micrometer.core.ipc.http.HttpSender;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -20,14 +21,15 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
     private static final String URI = "http://localhost:8082/api/v1/document";
     private static final String URI_ID = "http://localhost:8082/api/v1/document/{documentId}";
 
-    void testGet(String url, String authorization, HttpStatus expectedStatus, Object... uriVariables) throws RestClientException {
+
+    void doRestTest(String url, HttpMethod httpMethod, String authorization, Object payload, HttpStatus expectedStatus, Object... uriVariables) throws RestClientException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, authorization);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), String.class, uriVariables);
+            ResponseEntity<String> response = restTemplate.exchange(url, httpMethod, new HttpEntity<>(payload, headers), String.class, uriVariables);
             assertEquals(expectedStatus, response.getStatusCode());
             assertEquals(MediaType.APPLICATION_JSON, response.getHeaders().getContentType());
             assertJsonEquals(readExpectedFile(), response.getBody());
@@ -41,43 +43,47 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
     @Test
     @Order(1)
     void getDocuments() {
-        testGet(URI, "", HttpStatus.OK);
+        doRestTest(URI, HttpMethod.GET, "", null, HttpStatus.OK);
     }
 
 
     @Test
     @Order(2)
     void getDocument() {
-        testGet(URI_ID, "", HttpStatus.OK, 1);
+        doRestTest(URI_ID, HttpMethod.GET, "", null, HttpStatus.OK, 1);
     }
 
     @Test
     @Order(3)
     void getDocument_Ko() {
-        testGet(URI_ID, "", HttpStatus.NOT_FOUND, 100);
+        doRestTest(URI_ID, HttpMethod.GET, "", null, HttpStatus.NOT_FOUND, 100);
     }
 
-//    @Test
-//    @Order(1)
-//    void getDocuments() {
-//        DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
-//        System.out.println(documentPojo);
+
+    @Test
+    @Order(4)
+    void deleteDocument() throws Exception {
+        doRestTest(URI_ID, HttpMethod.DELETE, "", null, HttpStatus.OK, 1);
+
+//        MvcResult mvcResult = mockMvc
+//                .perform(MockMvcRequestBuilders
+//                        .delete(URI_ID, 1)
+//                        .accept(MediaType.APPLICATION_JSON_VALUE)
+//                        .header("Authorization", "Bearer " + mockToken("admin-2")))
+//                .andReturn();
 //
-//        // Update
-//        jdbcTemplate.update("Update document set description = 'pippo' where Id = 1");
+//        // Verifico lo stato della risposta
+//        assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
 //
-//        documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
-//        System.out.println(readExpectedFile());
-//    }
+//        // Verifico che lo Documento sia corretto
+//        ResponseMessage responseMessage = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ResponseMessage.class);
 //
-//    @Test
-//    @Order(2)
-//    void getDocumentsTest2() {
-//        // Update
-//        DocumentPojo documentPojo = jdbcTemplate.queryForObject("Select * from document where Id = 1", new BeanPropertyRowMapper<>(DocumentPojo.class));
-//
-//        System.out.println(documentPojo);
-//    }
+//        assertEquals(ResponseCode.OK.toString(), responseMessage.getCode());
+//        assertEquals(ResponseCode.OK.getDescription(), responseMessage.getDescription());
+//        assertEquals("Documento eliminato correttamente", responseMessage.getDetail());
+    }
+
+
 }
 
 //        HttpStatus httpStatus;
