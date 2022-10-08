@@ -2,7 +2,6 @@ package it.eg.cookbook;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.eg.cookbook.config.ObjectMapperConfig;
-import it.eg.cookbook.util.TestType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -50,7 +49,6 @@ public abstract class AbstractTest {
     private TestInfo testInfo;
 
     private static boolean firstTest = true;
-
     protected static ObjectMapper objectMapper;
     protected static RestTemplate restTemplate;
     protected static JdbcTemplate jdbcTemplate;
@@ -70,7 +68,7 @@ public abstract class AbstractTest {
         // Operazioni da eseguire allo startup
         if (firstTest) {
             // Integration test
-            if (getTestType() == TestType.IntegrationTest) {
+            if (isIntegrationTest()) {
                 // Avvio il compose
                 startCompose();
 
@@ -90,8 +88,12 @@ public abstract class AbstractTest {
         // Operazioni da eseguire ad ogni test
     }
 
-    public TestType getTestType() {
-        return testInfo.getTestClass().get().getSimpleName().endsWith("IT") ? TestType.IntegrationTest : TestType.UnitTest;
+    public boolean isIntegrationTest() {
+        return testInfo.getTestClass().get().getSimpleName().endsWith("IT");
+    }
+
+    public boolean isUnitTest() {
+        return !isIntegrationTest();
     }
 
     public String getTestClass() {
