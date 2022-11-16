@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +80,7 @@ public abstract class DocumentControllerAbstract extends AbstractTest {
     @Test
     @Order(7)
     void postDocument() throws Exception {
+
         assertEquals(0, jdbcTemplate.queryForObject("Select count(*) from document where name = 'doc-5'", Integer.class));
 
         doRestTest(URI, HttpMethod.POST, "", readRequestFile(), HttpStatus.OK);

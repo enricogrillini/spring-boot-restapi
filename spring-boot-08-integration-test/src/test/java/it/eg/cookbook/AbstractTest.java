@@ -74,7 +74,9 @@ public abstract class AbstractTest {
 
                 // Imposto il datasource
                 dataSource = IT_DATA_SOURCE;
-            } else {
+            }
+
+            if (isUnitTest()) {
                 initDB();
             }
 
