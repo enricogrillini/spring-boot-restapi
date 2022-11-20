@@ -1,5 +1,6 @@
 package it.eg.cookbook;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.eg.cookbook.config.ObjectMapperConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -153,6 +154,14 @@ public abstract class AbstractTest {
         return readFile("/mock/", fileNameSuffix);
     }
 
+    protected <T> T readMockFile(Class<T> objectClass) throws JsonProcessingException {
+        return readMockFile(objectClass, "");
+    }
+
+    protected <T> T readMockFile(Class<T> objectClass, String fileNameSuffix) throws JsonProcessingException {
+        return objectMapper.readerFor(objectClass).readValue(readMockFile(fileNameSuffix));
+    }
+
     protected String readExpectedFile() {
         return readExpectedFile("");
     }
@@ -161,21 +170,21 @@ public abstract class AbstractTest {
         return readFile("/expected/", fileNameSuffix);
     }
 
-    protected String readRequestFile() {
-        return readRequestFile("");
-    }
-
-    protected String readRequestFile(String fileNameSuffix) {
-        return readFile("/request/", fileNameSuffix);
-    }
-
-    protected String readModelFile() {
-        return readModelFile("");
-    }
-
-    protected String readModelFile(String fileNameSuffix) {
-        return readFile("/model/", fileNameSuffix);
-    }
+//    protected String readRequestFile() {
+//        return readRequestFile("");
+//    }
+//
+//    protected String readRequestFile(String fileNameSuffix) {
+//        return readFile("/request/", fileNameSuffix);
+//    }
+//
+//    protected String readModelFile() {
+//        return readModelFile("");
+//    }
+//
+//    protected String readModelFile(String fileNameSuffix) {
+//        return readFile("/model/", fileNameSuffix);
+//    }
 
     public String readFile(String type, String fileNameSuffix) {
         String fileNamePath = "src/test/resources/json/{0}{1}{2}{3}.json";
