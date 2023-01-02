@@ -51,7 +51,7 @@ public class AccessLogFilter implements Filter {
     }
 
     private String generateUniqueCorrelationId() {
-        return new StringBuilder(46).append("generated:")
+        return new StringBuilder().append("generated:")
                 .append(UUID.randomUUID())
                 .toString();
     }
