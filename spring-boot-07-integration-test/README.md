@@ -26,9 +26,7 @@ Tra gli aspetti indirizzati:
    - **JPA**
    - **Integration test**
  - 08
-   - Caching - Caffeine
-
-
+   - Async API
 
 ## Link principali
 - **Swagger UI** - http://localhost:8082/swagger-ui.html

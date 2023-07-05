@@ -15,18 +15,18 @@ Tra gli aspetti indirizzati:
    - Correlation ID
    - Access Log
    - Actuator
- - 04
-   - Swagger
- - **05**
-   - **Gestione Sicurezza tramite JWT**
-   - **Swagger definizione multipla (document/security)**
-  - 06
-    - Approccio contract first
+ - **04**
+   - **Swagger**
+ - 05
+   - Gestione Sicurezza tramite JWT
+   - Swagger definizione multipla (document/security)
+ - 06
+   - Approccio contract first
  - 07
    - JPA
-   - Caching - Caffeine
- - 08
    - Integration test
+ - 08
+   - Async API
 
 
 ## Link principali
