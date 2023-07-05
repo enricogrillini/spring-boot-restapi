@@ -11,12 +11,19 @@ tags:
     description: Rest API - Getione Job
 
 paths:
-  /api/v1/job:
+  /api/v1/job/{id}:
     get:
       tags:
         - Job
       summary: Ritorna la lista di documenti
       operationId: getJob
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Job uuid
       responses:
         "200":
           description: Lista di documenti
@@ -25,6 +32,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Job'
 
+  /api/v1/job:
     post:
       tags:
         - Job
@@ -38,7 +46,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Job'
         "400":
-          description: Impossibile inserire il documento
+          description: Impossibile sottomettere il Job
           content:
             application/json:
               schema:

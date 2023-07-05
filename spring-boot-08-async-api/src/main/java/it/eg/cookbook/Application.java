@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 
 @OpenAPIDefinition(info = @Info(title = "Document API", version = "${info.app.version}", description = "Rest API example: Document API"))
-@SecurityScheme(name = "bearerAuth", scheme = "bearer", bearerFormat = "JWT", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 @EnableAsync
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
 public class Application {
