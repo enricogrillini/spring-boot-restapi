@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 
 @OpenAPIDefinition(info = @Info(title = "Document API", version = "${info.app.version}", description = "Rest API example: Document API"))
 @SecurityScheme(name = "bearerAuth", scheme = "bearer", bearerFormat = "JWT", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
+@EnableAsync
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
 public class Application {
     public static void main (String[] args) {
