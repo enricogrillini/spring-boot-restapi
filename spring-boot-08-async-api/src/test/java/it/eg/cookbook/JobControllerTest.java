@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.eg.cookbook.model.Job;
 import it.eg.cookbook.model.JobStatus;
 import it.eg.cookbook.service.AsyncService;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ThrowingRunnable;
 import org.junit.jupiter.api.Assertions;
@@ -16,10 +18,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Slf4j
 class JobControllerTest {
 
     @Autowired
